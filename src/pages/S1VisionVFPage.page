@@ -1,0 +1,59 @@
+<apex:page docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" controller="S1VisionComponentController">
+    <script>
+    Visualforce.remoting.timeout = 120000;
+    var iframeEvent;
+    if (window.addEventListener) {
+        // For standards-compliant web browsers
+        window.addEventListener("message", handleMessage, false);
+    } else {
+        window.attachEvent("onmessage", handleMessage);
+    }
+
+    function handleMessage(evt) {
+        //var data = JSON.parse(evt.data);
+        console.log('event is ', evt);
+        getCallVisionBase64(evt);
+    }
+
+    function getCallVisionBase64(evt) {
+        iframeEvent = evt;
+        submitFile(evt.data);
+        /*
+        Visualforce.remoting.Manager.invokeAction(
+            'S1VisionComponentController.getCallVisionBase64', evt.data,
+            function(result, event) {
+                var retResult = '';
+                if (!!result && event.status) {
+                    retResult = result;
+                    console.log('Predictions is ', result);
+
+                } else {
+                    console.log('Error is', event.message);
+                    retResult = event.message;
+                }
+                try {
+                    console.log('starting event')
+                    evt.source.postMessage(retResult, "*");
+                } catch (e) {
+                    console.log('Exception ..', e)
+                }
+
+
+            }, {
+                escape: false
+            });
+        */
+    }
+
+    function postResult(pr){
+        iframeEvent.source.postMessage(pr, "*");
+    }
+
+
+    </script>
+    <apex:form >
+        <apex:actionFunction name="submitFile" action="{!getCallVisionBase64VF}" oncomplete="postResult('{!predictionsResult}')">
+            <apex:param name="fileData" value="" assignTo="{!fileData}" />
+        </apex:actionFunction>
+    </apex:form>
+</apex:page>

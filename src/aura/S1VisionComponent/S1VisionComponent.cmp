@@ -1,0 +1,28 @@
+<aura:component access="GLOBAL" extensible="false" implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickActionWithoutHeader,force:hasRecordId" controller="S1VisionComponentController">
+    <ltng:require styles="/resource/S1Vision/assets/styles/salesforce-lightning-design-system.css" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="message" type="String" />
+    <aura:attribute name="predictions" type="Object" access="GLOBAL" />
+    <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:if isTrue="{!v.showSpinner}">
+        <div class="slds-spinner--large slds-container--center">
+            <img src="/resource/S1Vision/assets/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
+        </div>
+    </aura:if>
+    <div>
+        <div class="slds-grid slds-m-around--small slds-hide">
+            <input aura:id="uploadImage" type="file" multiple="false" accept="image/*" onchange="{!c.uploadImage}" />
+        </div>
+        <div class="slds-grid slds-m-around--small">
+            <lightning:button class="slds-col--padded slds-size--1-of-1" variant="neutral" label="Load Image" onclick="{!c.predictImage}" />
+        </div>
+        <div class="slds-grid slds-m-around--small slds-box slds-theme--default slds-hide" aura:id="_imageContainer">
+            <img aura:id="_image" class="imageContainer" src="" />
+        </div>
+        <aura:iteration items="{!v.predictions}" var="item">
+            <p>{!item.label} - {!item.probabilityPerc}</p>
+        </aura:iteration>
+    </div>
+    <iframe src="/apex/S1VisionVFPage" style="width:100%;" aura:id="_visionFrame" frameborder="0" class="slds-hide"></iframe>
+</aura:component>
