@@ -11,7 +11,7 @@
             try {
                 var state = response.getState();
                 if (state == 'SUCCESS') {
-                    helper.parsePredictions(cmp,evt,response.returnValue);
+                    helper.parsePredictions(cmp, evt, response.returnValue);
                 } else if (state == 'ERROR') {
                     console.log("Error in calling Apex method: ", response, response.getError());
                 }
@@ -25,16 +25,43 @@
 
     sendImagePredictionsToVF: function(cmp, evt, imageContent) {
         var visionFrame = cmp.find('_visionFrame');
-        visionFrame.getElement().contentWindow.postMessage(imageContent, '*');
+        var imageData = {};
+        imageData.imageContent = imageContent;
+        imageData.jwtSub = cmp.get('v.jwtSub');
+        imageData.certFileId = cmp.get('v.certFileId');
+        visionFrame.getElement().contentWindow.postMessage(JSON.stringify(imageData), '*');
     },
 
     getImagePredictionsFromVF: function(cmp, evt, result) {
-        cmp.set('v.showSpinner', false);
-        this.parsePredictions(cmp,evt,result.data)
+        var returnData = {};
+        try {
+            returnData = JSON.parse(result.data);
+            if (returnData.message != undefined) {
+                if (returnData.success) {
+                    this.parsePredictions(cmp, evt, returnData.predictions)
+                } else {
+                    cmp.set('v.showError', true);
+                    cmp.set('v.errorMessage', returnData.message);
+                }
+            }
+        } catch (e) {
+            cmp.set('v.showError', true);
+            cmp.set('v.errorMessage', e);
+        }
+
+
+        try {
+            returnData = JSON.parse(result.data);
+            cmp.set('v.showSpinner', false);
+        } catch (e) {
+
+        }
+
+
     },
 
-    parsePredictions: function(cmp, evt, predictionsString) {
-        var predictions = JSON.parse(predictionsString);
+    parsePredictions: function(cmp, evt, predictions) {
+        //var predictions = JSON.parse(predictionsString);
         if (predictions.length) {
             for (var i = 0; i < predictions.length; i++) {
                 var prediction = predictions[i];

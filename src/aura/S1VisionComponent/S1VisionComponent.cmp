@@ -4,7 +4,11 @@
     <aura:attribute name="recordId" type="String" />
     <aura:attribute name="message" type="String" />
     <aura:attribute name="predictions" type="Object" access="GLOBAL" />
+    <aura:attribute name="certFileId" type="String" access="GLOBAL" required="true" default="0691a000001IgqTAAS"/>
+    <aura:attribute name="jwtSub" type="String" access="GLOBAL" required="true" default="Your Einstein Vision registered email ID"/>
     <aura:attribute name="showSpinner" type="Boolean" default="false" />
+    <aura:attribute name="showError" type="Boolean" default="false" />
+    <aura:attribute name="errorMessage" type="String" default="" />
     <aura:if isTrue="{!v.showSpinner}">
         <div class="slds-spinner--large slds-container--center">
             <img src="/resource/S1Vision/assets/images/spinners/slds_spinner_brand.gif" alt="Loading..." />
@@ -20,6 +24,10 @@
         <div class="slds-grid slds-m-around--small slds-box slds-theme--default slds-hide" aura:id="_imageContainer">
             <img aura:id="_image" class="imageContainer" src="" />
         </div>
+
+        <aura:if isTrue="{!v.showError}">
+            <p>{!v.errorMessage}</p>
+        </aura:if>
         <aura:iteration items="{!v.predictions}" var="item">
             <p>{!item.label} - {!item.probabilityPerc}</p>
         </aura:iteration>

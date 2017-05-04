@@ -1,5 +1,5 @@
 public with sharing class S1VisionJWTBearerFlow {
-	public static String getAccessToken(String tokenEndpoint, JWT jwt) {
+	public static String getAccessToken(String tokenEndpoint, S1VisionJWT jwt) {
     
         String access_token = null;
         String body = 'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=' + jwt.issue();

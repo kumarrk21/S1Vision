@@ -1,4 +1,4 @@
-public class S1Vision {
+global class S1Vision {
 	public static String VISION_API = 'https://api.metamind.io/v1/vision';
     public static String PREDICT = VISION_API + '/predict';
 
@@ -15,19 +15,19 @@ public class S1Vision {
     }
 
     private static List<Prediction> predictInternal(String sample, String access_token, String model, boolean isBase64) {
-        string contentType = HttpFormBuilder.GetContentType();
+        string contentType = S1VisionHttpFormBuilder.GetContentType();
         //  Compose the form
         string form64 = '';
 
-        form64 += HttpFormBuilder.WriteBoundary();
-        form64 += HttpFormBuilder.WriteBodyParameter('modelId', EncodingUtil.urlEncode(model, 'UTF-8'));
-        form64 += HttpFormBuilder.WriteBoundary();
+        form64 += S1VisionHttpFormBuilder.WriteBoundary();
+        form64 += S1VisionHttpFormBuilder.WriteBodyParameter('modelId', EncodingUtil.urlEncode(model, 'UTF-8'));
+        form64 += S1VisionHttpFormBuilder.WriteBoundary();
         if(isBase64) {
-         form64 += HttpFormBuilder.WriteBodyParameter('sampleBase64Content', sample);
+         form64 += S1VisionHttpFormBuilder.WriteBodyParameter('sampleBase64Content', sample);
         } else {
-         form64 += HttpFormBuilder.WriteBodyParameter('sampleLocation', sample);
+         form64 += S1VisionHttpFormBuilder.WriteBodyParameter('sampleLocation', sample);
         }
-        form64 += HttpFormBuilder.WriteBoundary(HttpFormBuilder.EndingType.CrLf);
+        form64 += S1VisionHttpFormBuilder.WriteBoundary(S1VisionHttpFormBuilder.EndingType.CrLf);
 
         blob formBlob = EncodingUtil.base64Decode(form64);
         string contentLength = string.valueOf(formBlob.size());
@@ -73,7 +73,7 @@ public class S1Vision {
          return(predictions);
     }
 
-    public class Prediction {
+    global class Prediction {
         public String label {get;set;}
         public Double probability {get;set;}
     }
